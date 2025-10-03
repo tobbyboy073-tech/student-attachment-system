@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <header>
+    <h1>Attachment System Dashboard</h1>
+  </header>
+
+  <main class="dashboard">
+    <!-- Dashboard Cards -->
+    <div class="card" onclick="showForm('studentForm')">Add Student</div>
+    <div class="card" onclick="showForm('companyForm')">Add Company</div>
+    <div class="card" onclick="showForm('opportunityForm')">Add Opportunity</div>
+    <div class="card" onclick="showForm('applicationForm')">Add Application</div>
+  </main>
+
+  <!-- ====== Forms Section ====== -->
+  <section class="forms">
+
+    <!-- Student Form -->
+    <form id="studentForm" class="hidden" action="/addStudent" method="POST">
+      <h2>Add Student</h2>
+      <input type="text" name="name" placeholder="Student Name" required />
+      <input type="text" name="school" placeholder="School" required />
+      <input type="text" name="course" placeholder="Course" required />
+      <button type="submit">Save Student</button>
+    </form>
+
+    <!-- Company Form -->
+    <form id="companyForm" class="hidden" action="/addCompany" method="POST">
+      <h2>Add Company</h2>
+      <input type="text" name="name" placeholder="Company Name" required />
+      <input type="text" name="location" placeholder="Location" required />
+      <input type="text" name="description" placeholder="Description" required />
+      <button type="submit">Save Company</button>
+    </form>
+
+    <!-- Opportunity Form -->
+    <form id="opportunityForm" class="hidden" action="/addOpportunity" method="POST">
+      <h2>Add Opportunity</h2>
+      <input type="text" name="title" placeholder="Opportunity Title" required />
+      <input type="text" name="company" placeholder="Company" required />
+      <input type="text" name="description" placeholder="Description" required />
+      <input type="date" name="deadline" placeholder="Deadline" required />
+      <button type="submit">Save Opportunity</button>
+    </form>
+
+    <!-- Application Form -->
+    <form id="applicationForm" class="hidden" action="/addApplication" method="POST">
+      <h2>Add Application</h2>
+      <input type="text" name="studentName" placeholder="Student Name" required />
+      <input type="text" name="opportunityTitle" placeholder="Opportunity Title" required />
+      <textarea name="coverLetter" placeholder="Cover Letter" required></textarea>
+      <button type="submit">Save Application</button>
+    </form>
+
+  </section>
+
+  <script>
+    function showForm(formId) {
+      // Hide all forms first
+      document.querySelectorAll('form').forEach(f => f.classList.add('hidden'));
+      // Show selected form
+      document.getElementById(formId).classList.remove('hidden');
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  </script>
+</body>
+</html>

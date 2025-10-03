@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Application</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<button onclick="logout()">Logout</button>
+
+<script>
+function logout() {
+  fetch('/api/logout')
+    .then(() => {
+      window.location.href = '/login.html';
+    })
+    .catch(() => alert('Logout failed, please try again.'));
+}
+</script>
+
+<script>
+fetch('/api/checkAuth')
+  .then(res => res.json())
+  .then(data => {
+    if (!data.loggedIn) {
+      window.location.href = '/login.html';
+    }
+  })
+  .catch(() => window.location.href = '/login.html');
+</script>
+
+  <header>Submit Application</header>
+
+  <div class="container">
+    <h2>Application Form</h2>
+    <form id="applicationForm">
+      <label>Student Name:
+        <input type="text" name="student" required>
+      </label><br>
+
+      <label>Opportunity Title:
+        <input type="text" name="opportunity" required>
+      </label><br>
+
+      <label>Cover Letter:
+        <textarea name="coverLetter" rows="4" required></textarea>
+      </label><br>
+
+      <button type="submit">Submit Application</button>
+    </form>
+
+    <div id="message"></div>
+  </div>
+
+  <footer>&copy; 2025 Student Attachment System</footer>
+
+  <script src="application.js"></script>
+</body>
+</html>

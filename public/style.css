@@ -1,0 +1,174 @@
+/* ====== General Page Style ====== */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f6f8;
+  color: #333;
+}
+
+/* ====== Header ====== */
+header {
+  background: #0066cc;
+  color: #fff;
+  padding: 15px 20px;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Logout button in header */
+header .btn {
+  background: #ff4d4d;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+}
+header .btn:hover {
+  background: #cc0000;
+}
+
+/* ====== Container ====== */
+.container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 20px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+/* ====== Buttons ====== */
+button, .btn {
+  background: #0066cc;
+  color: white;
+  padding: 8px 16px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover, .btn:hover {
+  background: #004999;
+}
+
+/* ====== Table ====== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background: #0066cc;
+  color: white;
+  font-weight: bold;
+}
+
+/* ====== Inputs ====== */
+input, select, textarea {
+  padding: 10px;
+  margin: 5px 0 15px 0;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* ====== Footer ====== */
+footer {
+  text-align: center;
+  margin-top: 20px;
+  padding: 12px;
+  background: #eee;
+  font-size: 0.9rem;
+}
+
+/* ====== Links ====== */
+a {
+  text-decoration: none;
+  color: #0066cc;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* ====== Dashboard cards ====== */
+.card {
+  flex:1;
+  background:#0066cc;
+  color:white;
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
+  font-size:1.2rem;
+  font-weight:bold;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}/* ====== Form Styling ====== */
+form {
+  max-width: 500px;
+  margin: 20px auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+form input, form select, form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+form button {
+  width: 100%;
+  padding: 12px;
+  background: #0066cc;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+form button:hover {
+  background: #004999;
+}
+
+#message {
+  margin-top: 10px;
+  font-weight: bold;
+  color: green;
+  text-align: center;
+}
+
+/* ====== Textarea Styling ====== */
+textarea {
+  resize: vertical;
+}
+
+

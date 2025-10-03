@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Safaricom",
+    "location": "Nairobi",
+    "description": "Leading telecom provider in Kenya"
+  },
+  {
+    "name": "Equity Bank",
+    "location": "Nairobi",
+    "description": "One of the largest banks in East Africa"
+  },
+  {
+    "name": "KenGen",
+    "location": "Naivasha",
+    "description": "Kenya Electricity Generating Company"
+  },
+  {
+    "id": "mg0lmwxv-1helko",
+    "name": "Safaricom",
+    "description": "A 3 month internship program for computer science students to gain real world development  experience",
+    "location": ""
+  },
+  {
+    "id": "mg0lt7z7-oujvft",
+    "name": "Google Kenya",
+    "description": "A 3 month internship program for computer science students to gain real world development  experience",
+    "location": ""
+  }
+]

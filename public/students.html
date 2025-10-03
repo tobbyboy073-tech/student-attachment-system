@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students List</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f9f9f9; }
+        h1 { text-align: center; }
+        #filterInput {
+            width: 300px;
+            padding: 8px;
+            margin: 10px auto;
+            display: block;
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th { background: #4CAF50; color: white; }
+        tr:nth-child(even) { background: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Student List</h1>
+    <input type="text" id="filterInput" placeholder="Filter by name or school...">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Course</th>
+                <th>School</th>
+            </tr>
+        </thead>
+        <tbody id="studentTableBody">
+            <!-- Filled by JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        // Fetch students from the server
+        async function loadStudents() {
+            try {
+                const res = await fetch('/api/students');
+                const students = await res.json();
+                displayStudents(students);
+            } catch (err) {
+                console.error('Error loading students:', err);
+            }
+        }
+
+        // Display students in the table
+        function displayStudents(students) {
+            const tableBody = document.getElementById('studentTableBody');
+            tableBody.innerHTML = '';
+
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.course}</td>
+                    <td>${student.school}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Save for filtering
+            window.allStudents = students;
+        }
+
+        // Filter students
+        document.getElementById('filterInput').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = window.allStudents.filter(s =>
+                s.name.toLowerCase().includes(term) ||
+                s.school.toLowerCase().includes(term)
+            );
+            displayStudents(filtered);
+        });
+
+        loadStudents();
+    </script>
+</body>
+</html>

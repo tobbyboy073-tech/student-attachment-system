@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Students</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>Students</header>
+  <div class="container">
+    <table id="studentsTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>School</th>
+          <th>Course</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    fetch('/api/students')
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector('#studentsTable tbody');
+        data.forEach(s => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${s.id}</td><td>${s.name}</td><td>${s.school}</td><td>${s.course}</td>`;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => console.error(err));
+  </script>
+</body>
+</html>

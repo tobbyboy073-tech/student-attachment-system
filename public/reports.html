@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reports & Analytics</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header>Reports & Analytics</header>
+<div class="container">
+
+  <h2>Overall Stats</h2>
+  <ul id="overallStats"></ul>
+
+  <h2>Applications per Opportunity</h2>
+  <canvas id="applicationsChart" style="max-width:700px;"></canvas>
+
+  <h2>Opportunities per Company</h2>
+  <canvas id="opportunitiesChart" style="max-width:700px;"></canvas>
+
+</div>
+
+<script>
+  // Fetch overall stats
+  fetch('/api/stats')
+    .then(res => res.json())
+    .then(data => {
+      const ul = document.getElementById('overallStats');
+      ul.innerHTML = `
+        <li>Total Students: ${data.students}</li>
+        <li>Total Companies: ${data.companies}</li>
+        <li>Total Opportunities: ${data.opportunities}</li>
+        <li>Total Applications: ${data.applications}</li>
+      `;
+    });
+
+  // Applications per opportunity chart
+  fetch('/api/applications-per-opportunity')
+    .then(res => res.json())
+    .then(data => {
+      const ctx = document.getElementById('applicationsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(data),
+          datasets: [{
+            label: 'Applications per Opportunity',
+            data: Object.values(data),
+            backgroundColor: '#0066cc'
+          }]
+        },
+        options: { responsive: true }
+      });
+    });
+
+  // Opportunities per company chart
+  fetch('/api/opportunities-per-company')
+    .then(res => res.json())
+    .then(data => {
+      const ctx = document.getElementById('opportunitiesChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(data),
+          datasets: [{
+            label: 'Opportunities per Company',
+            data: Object.values(data),
+            backgroundColor: '#009966'
+          }]
+        },
+        options: { responsive: true }
+      });
+    });
+</script>
+</body>
+</html>

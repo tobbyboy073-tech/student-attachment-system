@@ -1,0 +1,88 @@
+/* ===== Reset ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f5f7fa;
+  color: #333;
+}
+
+/* ===== Header ===== */
+header {
+  background: #0066cc;
+  color: white;
+  padding: 15px 25px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+header h1 {
+  font-size: 1.5rem;
+}
+
+header nav a {
+  text-decoration: none;
+  color: white;
+  margin: 0 10px;
+  background: rgba(255,255,255,0.2);
+  padding: 6px 12px;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+header nav a:hover {
+  background: rgba(255,255,255,0.4);
+}
+
+/* ===== Form Container ===== */
+.container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 25px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0066cc;
+}
+
+/* ===== Form Elements ===== */
+form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+form input, form textarea, form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+form button {
+  background: #0066cc;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+}
+
+form button:hover {
+  background: #004c99;
+}

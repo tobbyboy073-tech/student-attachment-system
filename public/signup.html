@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Signup</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Signup</h2>
+  <form id="signupForm">
+    <label>Username: <input type="text" name="username" required></label><br>
+    <label>Password: <input type="password" name="password" required></label><br>
+    <button type="submit">Signup</button>
+  </form>
+  <p id="message"></p>
+</div>
+<script>
+document.getElementById('signupForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target).entries());
+  fetch('/api/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(res => document.getElementById('message').textContent = res.message || res.error)
+  .catch(() => document.getElementById('message').textContent = 'Network error');
+});
+</script>
+</body>
+</html>

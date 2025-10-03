@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Companies</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>Companies</header>
+  <div class="container">
+    <table id="companiesTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    fetch('/api/companies')
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector('#companiesTable tbody');
+        data.forEach(c => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${c.id}</td><td>${c.name}</td><td>${c.location}</td><td>${c.description}</td>`;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => console.error(err));
+  </script>
+</body>
+</html>
