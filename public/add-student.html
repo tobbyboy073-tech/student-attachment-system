@@ -4,12 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Student</title>
-  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Add Student</h1>
+  <h1>➕ Add Student</h1>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="add-student.html">Add Student</a>
+    <a href="add-company.html">Add Company</a>
+    <a href="add-opportunity.html">Add Opportunity</a>
+    <a href="dashboard.html">Dashboard</a>
+  </nav>
+
+  <hr>
+
   <form id="studentForm">
-    <label>Student Name:</label><br>
+    <label>Name:</label><br>
     <input type="text" id="name" required><br><br>
 
     <label>School:</label><br>
@@ -18,26 +29,35 @@
     <label>Course:</label><br>
     <input type="text" id="course" required><br><br>
 
-    <button type="submit">Submit</button>
+    <label>Phone Number:</label><br>
+    <input type="text" id="phone" placeholder="e.g. 07XXXXXXXX" required><br><br>
+
+    <button type="submit">Add Student</button>
   </form>
 
-  <p id="message" style="color:green;"></p>
+  <p id="message"></p>
 
   <script>
     document.getElementById('studentForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = document.getElementById('name').value;
-      const school = document.getElementById('school').value;
-      const course = document.getElementById('course').value;
 
-      const res = await fetch('/api/students', {
+      const student = {
+        name: document.getElementById('name').value,
+        school: document.getElementById('school').value,
+        course: document.getElementById('course').value,
+        phone: document.getElementById('phone').value
+      };
+
+      const res = await fetch('/addStudent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, school, course })
+        body: JSON.stringify(student)
       });
 
       const data = await res.json();
-      document.getElementById('message').textContent = data.message || 'Student added successfully!';
+      document.getElementById('message').innerText = data.message;
+
+      // Reset form after adding
       document.getElementById('studentForm').reset();
     });
   </script>

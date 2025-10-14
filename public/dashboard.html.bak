@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <header>🎯 Student Attachment System</header>
+  <main>
+    <h2>Dashboard</h2>
+    <div class="buttons">
+      <a class="btn" href="applyAttachment.html">🧑‍🎓 Apply for Attachment / Internship</a>
+      <a class="btn" href="addCompany.html">🏢 Add Company</a>
+      <a class="btn" href="reports.html">📊 Reports & Analytics</a>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Company</title>
+</head>
+<body>
+  <h2>Add Company</h2>
+
+  <form id="companyForm">
+    <label>Company Name:</label>
+    <input type="text" id="name" required>
+
+    <label>Location:</label>
+    <input type="text" id="location" required>
+
+    <label>Description:</label>
+    <textarea id="description" required></textarea>
+
+    <button type="submit">Add Company</button>
+  </form>
+
+  <p id="companyMsg"></p>
+
+  <hr>
+
+  <!-- ✅ Add Opportunity Section -->
+  <h3>Add Opportunity</h3>
+  <form id="opportunityForm">
+    <label>Opportunity Title:</label>
+    <input type="text" id="title" required>
+
+    <label>Company Name (must match added company):</label>
+    <input type="text" id="company" required>
+
+    <label>Description:</label>
+    <textarea id="opportunityDesc" required></textarea>
+
+    <label>Deadline:</label>
+    <input type="date" id="deadline" required>
+
+    <button type="submit">Add Opportunity</button>
+  </form>
+
+  <p>
+  <a href="addOpportunity.html">Add Opportunity for this company</a>
+</p>
+
+
+  <script src="addCompany.js"></script>
+</body>
+</html>

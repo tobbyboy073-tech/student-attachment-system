@@ -2,60 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Company</title>
-  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
-  <header>
-    <h1>Student Attachment System</h1>
-    <nav>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="addStudent.html">Add Student</a>
-      <a href="addCompany.html">Add Company</a>
-      <a href="addOpportunity.html">Add Opportunity</a>
-      <a href="viewApplications.html">View Applications</a>
-    </nav>
-  </header>
-
+  <header>🏢 Add Company</header>
   <div class="container">
-    <h2>Add Company</h2>
     <form id="companyForm">
-      <label for="name">Company Name</label>
+      <label for="name">Company Name:</label>
       <input type="text" id="name" required>
 
-      <label for="location">Location</label>
+      <label for="location">Location:</label>
       <input type="text" id="location" required>
-
-      <label for="description">Description</label>
-      <textarea id="description" required></textarea>
 
       <button type="submit">Add Company</button>
     </form>
+    <div id="message"></div>
   </div>
 
   <script>
-    document.getElementById('companyForm').addEventListener('submit', async (e) => {
+    document.getElementById("companyForm").addEventListener("submit", async e => {
       e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const location = document.getElementById("location").value.trim();
+      if (!name || !location) return;
 
-      const company = {
-        name: document.getElementById('name').value,
-        location: document.getElementById('location').value,
-        description: document.getElementById('description').value
-      };
-
-      const res = await fetch('/api/companies', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(company)
+      const res = await fetch("/api/companies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, location })
       });
-
-      if (res.ok) {
-        alert('Company added successfully!');
-        window.location.href = 'dashboard.html';
-      } else {
-        alert('Error adding company.');
-      }
+      const result = await res.json();
+      document.getElementById("message").textContent = result.message || result.error;
+      document.getElementById("message").style.color = res.ok ? "green" : "red";
+      e.target.reset();
     });
   </script>
 </body>

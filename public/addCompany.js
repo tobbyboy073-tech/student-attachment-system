@@ -1,29 +1,36 @@
-const form = document.getElementById('companyForm');
-const message = document.getElementById('message');
+const form = document.getElementById("companyForm");
+const message = document.getElementById("message");
+const addOpportunityBtn = document.getElementById("addOpportunityBtn");
 
-form.addEventListener('submit', e => {
-    e.preventDefault();
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const name = document.getElementById("name").value.trim();
+  const location = document.getElementById("location").value.trim();
 
-    if (!data.name || !data.location || !data.description) {
-        message.textContent = 'All fields are required';
-        return;
+  if (!name || !location) {
+    message.textContent = "❌ All fields are required";
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/companies", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, location })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      message.textContent = "✅ Company added successfully!";
+      addOpportunityBtn.style.display = "inline-block";
+    } else {
+      message.textContent = "❌ " + data.error;
     }
+  } catch (err) {
+    message.textContent = "❌ Network error";
+  }
+});
 
-    fetch('/api/companies', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(res => {
-        if(res.error) {
-            message.textContent = res.error;
-        } else {
-            message.textContent = res.message;
-            form.reset();
-        }
-    })
-    .catch(err => message.textContent = 'Network error adding company.');
+// Redirect to Add Opportunity
+addOpportunityBtn.addEventListener("click", () => {
+  window.location.href = "addOpportunity.html";
 });

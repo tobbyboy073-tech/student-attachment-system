@@ -2,65 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Opportunity</title>
-  <link rel="stylesheet" href="css/forms.css">
 </head>
 <body>
-  <header>
-    <h1>Student Attachment System</h1>
-    <nav>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="addStudent.html">Add Student</a>
-      <a href="addCompany.html">Add Company</a>
-      <a href="addOpportunity.html">Add Opportunity</a>
-      <a href="viewApplications.html">View Applications</a>
-    </nav>
-  </header>
+  <h1>➕ Add Opportunity</h1>
+  <form id="opportunityForm">
+    <label>Company:</label>
+    <select id="companySelect" required></select><br><br>
+    <label>Title:</label>
+    <input type="text" id="title" required><br><br>
+    <label>Description:</label>
+    <textarea id="description" required></textarea><br><br>
+    <button type="submit">Add Opportunity</button>
+  </form>
+  <div id="message"></div>
 
-  <div class="container">
-    <h2>Add Opportunity</h2>
-    <form id="opportunityForm">
-      <label for="title">Opportunity Title</label>
-      <input type="text" id="title" required>
-
-      <label for="company">Company</label>
-      <input type="text" id="company" required>
-
-      <label for="description">Description</label>
-      <textarea id="description" required></textarea>
-
-      <label for="deadline">Deadline</label>
-      <input type="date" id="deadline" required>
-
-      <button type="submit">Add Opportunity</button>
-    </form>
-  </div>
-
-  <script>
-    document.getElementById('opportunityForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const opportunity = {
-        title: document.getElementById('title').value,
-        company: document.getElementById('company').value,
-        description: document.getElementById('description').value,
-        deadline: document.getElementById('deadline').value
-      };
-
-      const res = await fetch('/api/opportunities', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(opportunity)
-      });
-
-      if (res.ok) {
-        alert('Opportunity added successfully!');
-        window.location.href = 'dashboard.html';
-      } else {
-        alert('Error adding opportunity.');
-      }
-    });
-  </script>
+  <script src="addOpportunity.js"></script>
 </body>
 </html>

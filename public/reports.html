@@ -1,77 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Reports & Analytics</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <title>📊 Reports & Analytics</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-<header>Reports & Analytics</header>
-<div class="container">
+  <header>📊 Reports & Analytics Dashboard</header>
 
-  <h2>Overall Stats</h2>
-  <ul id="overallStats"></ul>
+  <div class="container">
+    <h2>System Overview</h2>
 
-  <h2>Applications per Opportunity</h2>
-  <canvas id="applicationsChart" style="max-width:700px;"></canvas>
+    <div class="stats">
+      <div class="card">
+        <h3 id="studentCount">0</h3>
+        <p>Students</p>
+      </div>
+      <div class="card">
+        <h3 id="companyCount">0</h3>
+        <p>Companies</p>
+      </div>
+      <div class="card">
+        <h3 id="opportunityCount">0</h3>
+        <p>Opportunities</p>
+      </div>
+      <div class="card">
+        <h3 id="applicationCount">0</h3>
+        <p>Applications</p>
+      </div>
+    </div>
 
-  <h2>Opportunities per Company</h2>
-  <canvas id="opportunitiesChart" style="max-width:700px;"></canvas>
+    <canvas id="summaryChart" width="400" height="200"></canvas>
 
-</div>
+    <div style="margin-top: 20px;">
+      <button onclick="location.href='dashboard.html'">🏠 Back to Dashboard</button>
+    </div>
+  </div>
 
-<script>
-  // Fetch overall stats
-  fetch('/api/stats')
-    .then(res => res.json())
-    .then(data => {
-      const ul = document.getElementById('overallStats');
-      ul.innerHTML = `
-        <li>Total Students: ${data.students}</li>
-        <li>Total Companies: ${data.companies}</li>
-        <li>Total Opportunities: ${data.opportunities}</li>
-        <li>Total Applications: ${data.applications}</li>
-      `;
-    });
+  <script>
+    async function loadReports() {
+      try {
+        const [studentsRes, companiesRes, oppsRes, appsRes] = await Promise.all([
+          fetch("/students"),
+          fetch("/companies"),
+          fetch("/opportunities"),
+          fetch("/applications")
+        ]);
 
-  // Applications per opportunity chart
-  fetch('/api/applications-per-opportunity')
-    .then(res => res.json())
-    .then(data => {
-      const ctx = document.getElementById('applicationsChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: Object.keys(data),
-          datasets: [{
-            label: 'Applications per Opportunity',
-            data: Object.values(data),
-            backgroundColor: '#0066cc'
-          }]
-        },
-        options: { responsive: true }
-      });
-    });
+        const students = await studentsRes.json();
+        const companies = await companiesRes.json();
+        const opportunities = await oppsRes.json();
+        const applications = await appsRes.json();
 
-  // Opportunities per company chart
-  fetch('/api/opportunities-per-company')
-    .then(res => res.json())
-    .then(data => {
-      const ctx = document.getElementById('opportunitiesChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: Object.keys(data),
-          datasets: [{
-            label: 'Opportunities per Company',
-            data: Object.values(data),
-            backgroundColor: '#009966'
-          }]
-        },
-        options: { responsive: true }
-      });
-    });
-</script>
+        document.getElementById("studentCount").innerText = students.length;
+        document.getElementById("companyCount").innerText = companies.length;
+        document.getElementById("opportunityCount").innerText = opportunities.length;
+        document.getElementById("applicationCount").innerText = applications.length;
+
+        new Chart(document.getElementById("summaryChart"), {
+          type: "bar",
+          data: {
+            labels: ["Students", "Companies", "Opportunities", "Applications"],
+            datasets: [{
+              label: "Total Count",
+              data: [students.length, companies.length, opportunities.length, applications.length],
+              backgroundColor: ["#4CAF50", "#2196F3", "#FFC107", "#E91E63"]
+            }]
+          }
+        });
+
+      } catch (err) {
+        console.error("❌ Failed to load report data:", err);
+      }
+    }
+
+    loadReports();
+  </script>
 </body>
 </html>

@@ -1,108 +1,162 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
+// --- SERVER.JS ---
+// Run with: node server.js
+
+const express = require("express");
+const sqlite3 = require("sqlite3").verbose();
+const cors = require("cors");
+const path = require("path");
+
 const app = express();
+app.use(express.json());
+app.use(cors());
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
-
-// ===== Sample Data =====
-const students = [
-  { name: 'Tony Kimtai', course: 'ICT', school: 'Nakuru University' }
-];
-
-const companies = [
-  { name: 'ABC Ltd', location: 'Nakuru', description: 'Tech company' }
-];
-
-const opportunities = [
-  { title: 'Internship', company: 'ABC Ltd', description: 'IT internship', deadline: '2025-12-31' }
-];
-
-const applications = [
-  { student: 'Tony Kimtai', opportunity: 'Internship', coverLetter: 'I am interested.' }
-];
-
-const users = [
-  { username: 'admin', password: 'admin123' }
-];
-
-// ===== Authentication =====
-app.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find(u => u.username === username && u.password === password);
-  if(user) res.json({ success: true });
-  else res.json({ success: false, message: 'Invalid username or password' });
+// --- CONNECT TO DATABASE ---
+const db = new sqlite3.Database("./database.db", (err) => {
+  if (err) console.error("❌ Database connection failed:", err);
+  else console.log("✅ Connected to SQLite database.");
 });
 
-// ===== API Routes =====
-app.get('/api/students', (req, res) => res.json(students));
-app.get('/api/companies', (req, res) => res.json(companies));
-app.get('/api/opportunities', (req, res) => res.json(opportunities));
-app.get('/api/applications', (req, res) => res.json(applications));
+// --- CREATE TABLES ---
+db.serialize(() => {
+  db.run(`CREATE TABLE IF NOT EXISTS students (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    course TEXT,
+    school TEXT
+  )`);
 
-// ===== Analytics / Reports =====
-app.get('/api/opportunities-per-company', (req, res) => {
-  const counts = {};
-  opportunities.forEach(o => {
-    counts[o.company] = (counts[o.company] || 0) + 1;
+  db.run(`CREATE TABLE IF NOT EXISTS companies (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    location TEXT
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS opportunities (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    description TEXT,
+    companyId INTEGER,
+    FOREIGN KEY(companyId) REFERENCES companies(id)
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS applications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    studentId INTEGER,
+    opportunityId INTEGER,
+    coverLetter TEXT,
+    FOREIGN KEY(studentId) REFERENCES students(id),
+    FOREIGN KEY(opportunityId) REFERENCES opportunities(id)
+  )`);
+});
+
+// --- AUTO-SEED DATABASE ---
+db.serialize(() => {
+  db.get("SELECT COUNT(*) AS count FROM students", (err, row) => {
+    if (row.count === 0) {
+      console.log("🧑‍🎓 Inserting sample students...");
+      const students = [
+        ["John Mwangi", "Computer Science", "JKUAT"],
+        ["Sarah Njeri", "Information Technology", "Kabarak University"],
+        ["Brian Otieno", "Software Engineering", "Kenyatta University"],
+        ["Faith Chebet", "Computer Engineering", "University of Nairobi"],
+        ["Kevin Kiprotich", "Data Science", "Egerton University"]
+      ];
+      students.forEach(s =>
+        db.run("INSERT INTO students (name, course, school) VALUES (?, ?, ?)", s)
+      );
+    }
   });
-  res.json(counts);
-});
 
-app.get('/api/applications-per-opportunity', (req, res) => {
-  const counts = {};
-  applications.forEach(a => {
-    counts[a.opportunity] = (counts[a.opportunity] || 0) + 1;
+  db.get("SELECT COUNT(*) AS count FROM companies", (err, row) => {
+    if (row.count === 0) {
+      console.log("🏢 Inserting sample companies...");
+      const companies = [
+        ["Safaricom", "Nairobi"],
+        ["KCB Bank", "Nakuru"],
+        ["Equity Group", "Kisumu"],
+        ["IBM Kenya", "Nairobi"],
+        ["KenGen", "Naivasha"]
+      ];
+      companies.forEach(c =>
+        db.run("INSERT INTO companies (name, location) VALUES (?, ?)", c)
+      );
+    }
   });
-  res.json(counts);
-});
 
-app.get('/api/stats', (req, res) => {
-  res.json({
-    students: students.length,
-    companies: companies.length,
-    opportunities: opportunities.length,
-    applications: applications.length
+  db.get("SELECT COUNT(*) AS count FROM opportunities", (err, row) => {
+    if (row.count === 0) {
+      console.log("💼 Inserting sample opportunities...");
+      const opportunities = [
+        ["Software Developer Intern", "Assist in building web apps", 1],
+        ["Data Analyst Trainee", "Work with data dashboards", 2],
+        ["Network Support Intern", "Support system maintenance", 3],
+        ["AI Research Assistant", "Work on AI-related tasks", 4],
+        ["Power Systems Intern", "Help maintain electrical systems", 5]
+      ];
+      opportunities.forEach(o =>
+        db.run("INSERT INTO opportunities (title, description, companyId) VALUES (?, ?, ?)", o)
+      );
+    }
   });
 });
 
-// ===== Add Student / Company / Opportunity / Application =====
-app.post('/api/students', (req, res) => {
-  const { name, school, course } = req.body;
-  if(!name || !school || !course) return res.json({ error: 'All fields required' });
-  students.push({ name, school, course });
-  res.json({ message: 'Student added successfully' });
+// --- ROUTES ---
+// Fetch students
+app.get("/api/students", (req, res) => {
+  console.log("📥 Incoming request: GET /api/students");
+  db.all("SELECT * FROM students", (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
 });
 
-app.post('/api/companies', (req, res) => {
-  const { name, location, description } = req.body;
-  if(!name || !location || !description) return res.json({ error: 'All fields required' });
-  companies.push({ name, location, description });
-  res.json({ message: 'Company added successfully' });
+// Fetch companies
+app.get("/api/companies", (req, res) => {
+  console.log("📥 Incoming request: GET /api/companies");
+  db.all("SELECT * FROM companies", (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
 });
 
-app.post('/api/opportunities', (req, res) => {
-  const { title, company, description, deadline } = req.body;
-  if(!title || !company || !description || !deadline) return res.json({ error: 'All fields required' });
-  opportunities.push({ title, company, description, deadline });
-  res.json({ message: 'Opportunity added successfully' });
+// Fetch opportunities with company name
+app.get("/api/opportunities", (req, res) => {
+  console.log("📥 Incoming request: GET /api/opportunities");
+  const query = `
+    SELECT opportunities.id, opportunities.title, opportunities.description, companies.name AS company
+    FROM opportunities
+    JOIN companies ON opportunities.companyId = companies.id
+  `;
+  db.all(query, (err, rows) => {
+    if (err) {
+      console.error("❌ Failed to load opportunities:", err.message);
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(rows);
+  });
 });
 
-app.post('/api/applications', (req, res) => {
-  const { student, opportunity, coverLetter } = req.body;
-  if(!student || !opportunity || !coverLetter) return res.json({ error: 'All fields required' });
-  applications.push({ student, opportunity, coverLetter });
-  res.json({ message: 'Application submitted successfully' });
+// Fetch all applications
+app.get("/api/applications", (req, res) => {
+  console.log("📥 Incoming request: GET /api/applications");
+  const query = `
+    SELECT applications.id, students.name AS student, opportunities.title AS opportunity, applications.coverLetter
+    FROM applications
+    JOIN students ON applications.studentId = students.id
+    JOIN opportunities ON applications.opportunityId = opportunities.id
+  `;
+  db.all(query, (err, rows) => {
+    if (err) {
+      console.error("❌ Failed to load applications:", err.message);
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(rows);
+  });
 });
 
-// ===== Serve index.html by default =====
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// ===== Start Server =====
+// --- START SERVER ---
 const PORT = 3000;
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

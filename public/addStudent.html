@@ -2,59 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Student</title>
-  <link rel="stylesheet" href="css/forms.css">
 </head>
 <body>
-  <header>
-    <h1>Student Attachment System</h1>
-    <nav>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="addStudent.html">Add Student</a>
-      <a href="addCompany.html">Add Company</a>
-      <a href="addOpportunity.html">Add Opportunity</a>
-      <a href="viewApplications.html">View Applications</a>
-    </nav>
-  </header>
-
-  <div class="container">
-    <h2>Add Student</h2>
-    <form id="studentForm">
-      <label for="name">Student Name</label>
-      <input type="text" id="name" required>
-
-      <label for="school">School</label>
-      <input type="text" id="school" required>
-
-      <label for="course">Course</label>
-      <input type="text" id="course" required>
-
-      <button type="submit">Add Student</button>
-    </form>
-  </div>
+  <h1>➕ Add Student</h1>
+  <form id="studentForm">
+    <label>Name:</label>
+    <input type="text" id="name" required><br><br>
+    <label>Course:</label>
+    <input type="text" id="course"><br><br>
+    <label>Year:</label>
+    <input type="text" id="year"><br><br>
+    <button type="submit">Add Student</button>
+  </form>
+  <div id="message"></div>
 
   <script>
-    document.getElementById('studentForm').addEventListener('submit', async (e) => {
+    const form = document.getElementById("studentForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async e => {
       e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const course = document.getElementById("course").value.trim();
+      const year = document.getElementById("year").value.trim();
 
-      const student = {
-        name: document.getElementById('name').value,
-        school: document.getElementById('school').value,
-        course: document.getElementById('course').value
-      };
+      if (!name) {
+        message.textContent = "❌ Name is required";
+        return;
+      }
 
-      const res = await fetch('/api/students', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(student)
-      });
-
-      if (res.ok) {
-        alert('Student added successfully!');
-        window.location.href = 'dashboard.html';
-      } else {
-        alert('Error adding student.');
+      try {
+        const res = await fetch("/api/students", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, course, year })
+        });
+        const data = await res.json();
+        message.textContent = res.ok ? "✅ Student added!" : "❌ " + data.error;
+        form.reset();
+      } catch {
+        message.textContent = "❌ Network error";
       }
     });
   </script>

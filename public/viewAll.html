@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>📋 View All Data</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    body { background: #f4f6f8; font-family: Arial, sans-serif; color: #333; }
+    h1 { text-align: center; margin-top: 20px; }
+    section { margin: 30px auto; width: 90%; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background-color: #007bff; color: white; cursor: pointer; }
+    th:hover { background-color: #0056b3; }
+    button { padding: 8px 15px; border: none; border-radius: 8px; background-color: #007bff; color: white; cursor: pointer; margin-bottom: 10px; }
+    button:hover { background-color: #0056b3; }
+    input[type="text"] { padding: 8px; width: 40%; border-radius: 8px; border: 1px solid #ccc; margin: 10px 0; }
+    .table-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <h1>📊 View All Data</h1>
+  <div style="text-align:center;">
+    <button onclick="loadAllData()">🔄 Refresh Data</button>
+    <button onclick="location.href='dashboard.html'">🏠 Back to Dashboard</button>
+  </div>
+
+  <!-- Students -->
+  <section>
+    <div class="table-header">
+      <h2>🧑‍🎓 Students</h2>
+      <input type="text" id="searchStudents" placeholder="Search students...">
+    </div>
+    <table id="studentsTable">
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Course</th><th>School</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- Companies -->
+  <section>
+    <div class="table-header">
+      <h2>🏢 Companies</h2>
+      <input type="text" id="searchCompanies" placeholder="Search companies...">
+    </div>
+    <table id="companiesTable">
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Location</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- Opportunities -->
+  <section>
+    <div class="table-header">
+      <h2>💼 Opportunities</h2>
+      <input type="text" id="searchOpportunities" placeholder="Search opportunities...">
+    </div>
+    <table id="opportunitiesTable">
+      <thead>
+        <tr><th>ID</th><th>Title</th><th>Description</th><th>Company</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- Applications -->
+  <section>
+    <div class="table-header">
+      <h2>📝 Applications</h2>
+      <input type="text" id="searchApplications" placeholder="Search applications...">
+    </div>
+    <table id="applicationsTable">
+      <thead>
+        <tr><th>ID</th><th>Student</th><th>Opportunity</th><th>Cover Letter</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <script>
+    async function loadAllData() {
+      const endpoints = {
+        students: "/api/students",
+        companies: "/api/companies",
+        opportunities: "/api/opportunities",
+        applications: "/api/applications"
+      };
+
+      try {
+        const [students, companies, opportunities, applications] = await Promise.all([
+          fetch(endpoints.students).then(res => res.json()),
+          fetch(endpoints.companies).then(res => res.json()),
+          fetch(endpoints.opportunities).then(res => res.json()),
+          fetch(endpoints.applications).then(res => res.json())
+        ]);
+
+        fillTable("studentsTable", students);
+        fillTable("companiesTable", companies);
+        fillTable("opportunitiesTable", opportunities);
+        fillTable("applicationsTable", applications);
+
+        addSearch("studentsTable", "searchStudents");
+        addSearch("companiesTable", "searchCompanies");
+        addSearch("opportunitiesTable", "searchOpportunities");
+        addSearch("applicationsTable", "searchApplications");
+
+        makeSortable("studentsTable");
+        makeSortable("companiesTable");
+        makeSortable("opportunitiesTable");
+        makeSortable("applicationsTable");
+      } catch (err) {
+        alert("❌ Failed to load all data.");
+        console.error(err);
+      }
+    }
+
+    function fillTable(tableId, data) {
+      const tbody = document.querySelector(`#${tableId} tbody`);
+      tbody.innerHTML = "";
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        Object.values(row).forEach(val => {
+          const td = document.createElement("td");
+          td.textContent = val;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    // 🔍 Search/filter function
+    function addSearch(tableId, searchId) {
+      const input = document.getElementById(searchId);
+      const table = document.getElementById(tableId);
+      input.addEventListener("keyup", function() {
+        const filter = input.value.toLowerCase();
+        const rows = table.getElementsByTagName("tr");
+        for (let i = 1; i < rows.length; i++) {
+          const cells = rows[i].getElementsByTagName("td");
+          let visible = false;
+          for (let j = 0; j < cells.length; j++) {
+            if (cells[j].textContent.toLowerCase().includes(filter)) {
+              visible = true;
+              break;
+            }
+          }
+          rows[i].style.display = visible ? "" : "none";
+        }
+      });
+    }
+
+    // ⬆️⬇️ Sortable table
+    function makeSortable(tableId) {
+      const table = document.getElementById(tableId);
+      const headers = table.querySelectorAll("th");
+
+      headers.forEach((header, index) => {
+        header.addEventListener("click", () => {
+          const rows = Array.from(table.querySelectorAll("tbody tr"));
+          const asc = header.classList.toggle("asc");
+          rows.sort((a, b) => {
+            const A = a.children[index].innerText.toLowerCase();
+            const B = b.children[index].innerText.toLowerCase();
+            return asc ? A.localeCompare(B) : B.localeCompare(A);
+          });
+          rows.forEach(row => table.querySelector("tbody").appendChild(row));
+        });
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", loadAllData);
+  </script>
+</body>
+</html>

@@ -1,23 +1,35 @@
-const msgStu = document.getElementById('message') || (() => { const p=document.createElement('p');p.id='message';document.body.appendChild(p);return p; })();
-
-document.getElementById('studentForm')?.addEventListener('submit', async (e) => {
+document.getElementById("studentForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const name = document.getElementById('studentName').value.trim();
-  const course = document.getElementById('course').value.trim();
-  const school = document.getElementById('school').value.trim();
 
-  if (!name || !course || !school) { msgStu.innerText = 'All fields are required'; return; }
+  const name = document.getElementById("name").value.trim();
+  const course = document.getElementById("course").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const year = document.getElementById("year").value;
+
+  if (!name || !course || !phone || !year) {
+    document.getElementById("message").textContent = "❌ All fields are required.";
+    return;
+  }
+
+  const student = { name, course, phone, year };
 
   try {
-    const res = await fetch('/api/students', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ name, course, school })
+    const response = await fetch("/api/students", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(student),
     });
-    const j = await res.json();
-    msgStu.innerText = j.message || j.error || 'Saved';
-    if (res.ok) e.target.reset();
-  } catch {
-    msgStu.innerText = 'Network error adding student';
+
+    const data = await response.json();
+
+    if (response.ok) {
+      document.getElementById("message").textContent = "✅ " + data.message;
+      document.getElementById("studentForm").reset();
+      document.getElementById("applyBtn").style.display = "inline-block";
+    } else {
+      document.getElementById("message").textContent = "❌ " + data.error;
+    }
+  } catch (err) {
+    document.getElementById("message").textContent = "❌ Network error.";
   }
 });

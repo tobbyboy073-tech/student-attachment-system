@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Apply for Attachment / Internship</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>Apply for Attachment / Internship</h2>
+
+  <form id="applicationForm">
+    <label for="studentName">Student Name:</label>
+    <input type="text" id="studentName" name="student" required>
+
+    <label for="opportunity">Select Opportunity:</label>
+    <select id="opportunity" name="opportunity" required>
+      <option value="">-- Select Opportunity --</option>
+    </select>
+
+    <label for="coverLetter">Cover Letter:</label>
+    <textarea id="coverLetter" name="coverLetter" rows="4" required></textarea>
+
+    <button type="submit">Submit Application</button>
+  </form>
+
+  <div id="message"></div>
+
+  <script src="applyAttachment.js"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply for Internship</title>
+  <style>
+    /* Reset and basic styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #0078d7;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    main {
+      flex: 1;
+      max-width: 500px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #0078d7;
+      margin-bottom: 25px;
+    }
+
+    form label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      margin-top: 15px;
+    }
+
+    form input, form select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #0078d7;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #005bb5;
+    }
+
+    .back-btn {
+      background: #555;
+      margin-top: 15px;
+    }
+
+    .back-btn:hover {
+      background: #333;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #f1f1f1;
+      font-size: 0.9rem;
+      color: #555;
+      border-top: 1px solid #ddd;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>Apply for Internship</header>
+
+  <main>
+    <h2>Internship Application Form</h2>
+    <form id="internshipForm">
+      <label for="studentName">Full Name:</label>
+      <input type="text" id="studentName" name="studentName" placeholder="Enter your full name" required />
+
+      <label for="school">School/University:</label>
+      <input type="text" id="school" name="school" placeholder="Enter your school/university" required />
+
+      <label for="course">Course:</label>
+      <input type="text" id="course" name="course" placeholder="Enter your course" required />
+
+      <label for="opportunity">Select Internship Opportunity:</label>
+      <select id="opportunity" name="opportunity" required>
+        <option value="">-- Choose an internship --</option>
+        <option value="Web Development Internship">Web Development Internship</option>
+        <option value="Data Science Internship">Data Science Internship</option>
+        <option value="Marketing Internship">Marketing Internship</option>
+        <option value="Software Engineering Internship">Software Engineering Internship</option>
+      </select>
+
+      <button type="submit">Apply Now</button>
+      <button type="button" class="back-btn" onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
+    </form>
+  </main>
+
+  <footer>
+    &copy; 2025 Student Attachment System | All Rights Reserved
+  </footer>
+
+ <script>
+  document.getElementById('internshipForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const data = {
+      studentName: document.getElementById('studentName').value,
+      school: document.getElementById('school').value,
+      course: document.getElementById('course').value,
+      opportunity: document.getElementById('opportunity').value
+    };
+
+    try {
+      const response = await fetch('/apply-internship', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('✅ ' + result.message);
+        this.reset();
+      } else {
+        alert('⚠️ ' + result.message);
+      }
+    } catch (error) {
+      alert('❌ An error occurred. Please try again.');
+      console.error(error);
+    }
+  });
+</script>
+
+</body>
+</html>
