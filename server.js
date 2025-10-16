@@ -102,6 +102,7 @@ db.serialize(() => {
 });
 
 // --- ROUTES ---
+
 // Fetch students
 app.get("/api/students", (req, res) => {
   console.log("📥 Incoming request: GET /api/students");
@@ -118,6 +119,29 @@ app.get("/api/companies", (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
+});
+
+// ✅ Add a new company
+app.post("/api/companies", (req, res) => {
+  const { name, location } = req.body;
+
+  if (!name || !location) {
+    return res.status(400).json({ error: "Company name and location are required." });
+  }
+
+  db.run(
+    "INSERT INTO companies (name, location) VALUES (?, ?)",
+    [name, location],
+    function (err) {
+      if (err) {
+        console.error("❌ Failed to add company:", err.message);
+        return res.status(500).json({ error: "Database error." });
+      }
+
+      console.log(`✅ New company added: ${name} (${location})`);
+      res.json({ message: "✅ Company added successfully!", id: this.lastID });
+    }
+  );
 });
 
 // Fetch opportunities with company name
