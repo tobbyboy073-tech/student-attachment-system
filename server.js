@@ -101,69 +101,38 @@ db.serialize(() => {
   });
 });
 
-// --- ROUTES ---
-
-// Fetch students
+// --- GET ROUTES ---
 app.get("/api/students", (req, res) => {
-  console.log("📥 Incoming request: GET /api/students");
+  console.log("📥 GET /api/students");
   db.all("SELECT * FROM students", (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
 });
 
-// Fetch companies
 app.get("/api/companies", (req, res) => {
-  console.log("📥 Incoming request: GET /api/companies");
+  console.log("📥 GET /api/companies");
   db.all("SELECT * FROM companies", (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
 });
 
-// ✅ Add a new company
-app.post("/api/companies", (req, res) => {
-  const { name, location } = req.body;
-
-  if (!name || !location) {
-    return res.status(400).json({ error: "Company name and location are required." });
-  }
-
-  db.run(
-    "INSERT INTO companies (name, location) VALUES (?, ?)",
-    [name, location],
-    function (err) {
-      if (err) {
-        console.error("❌ Failed to add company:", err.message);
-        return res.status(500).json({ error: "Database error." });
-      }
-
-      console.log(`✅ New company added: ${name} (${location})`);
-      res.json({ message: "✅ Company added successfully!", id: this.lastID });
-    }
-  );
-});
-
-// Fetch opportunities with company name
 app.get("/api/opportunities", (req, res) => {
-  console.log("📥 Incoming request: GET /api/opportunities");
+  console.log("📥 GET /api/opportunities");
   const query = `
     SELECT opportunities.id, opportunities.title, opportunities.description, companies.name AS company
     FROM opportunities
     JOIN companies ON opportunities.companyId = companies.id
   `;
   db.all(query, (err, rows) => {
-    if (err) {
-      console.error("❌ Failed to load opportunities:", err.message);
-      return res.status(500).json({ error: err.message });
-    }
+    if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
 });
 
-// Fetch all applications
 app.get("/api/applications", (req, res) => {
-  console.log("📥 Incoming request: GET /api/applications");
+  console.log("📥 GET /api/applications");
   const query = `
     SELECT applications.id, students.name AS student, opportunities.title AS opportunity, applications.coverLetter
     FROM applications
@@ -171,16 +140,78 @@ app.get("/api/applications", (req, res) => {
     JOIN opportunities ON applications.opportunityId = opportunities.id
   `;
   db.all(query, (err, rows) => {
-    if (err) {
-      console.error("❌ Failed to load applications:", err.message);
-      return res.status(500).json({ error: err.message });
-    }
+    if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
 });
 
+// --- POST ROUTES ---
+// Add student
+app.post("/api/students", (req, res) => {
+  const { name, course, school } = req.body;
+  if (!name || !course || !school)
+    return res.status(400).json({ error: "All fields are required" });
+
+  db.run(
+    "INSERT INTO students (name, course, school) VALUES (?, ?, ?)",
+    [name, course, school],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "✅ Student added successfully", id: this.lastID });
+    }
+  );
+});
+
+// Add company
+app.post("/api/companies", (req, res) => {
+  const { name, location } = req.body;
+  if (!name || !location)
+    return res.status(400).json({ error: "Both name and location are required" });
+
+  db.run(
+    "INSERT INTO companies (name, location) VALUES (?, ?)",
+    [name, location],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "✅ Company added successfully", id: this.lastID });
+    }
+  );
+});
+
+// Add opportunity
+app.post("/api/opportunities", (req, res) => {
+  const { title, description, companyId } = req.body;
+  if (!title || !description || !companyId)
+    return res.status(400).json({ error: "All fields are required" });
+
+  db.run(
+    "INSERT INTO opportunities (title, description, companyId) VALUES (?, ?, ?)",
+    [title, description, companyId],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "✅ Opportunity added successfully", id: this.lastID });
+    }
+  );
+});
+
+// Add application
+app.post("/api/applications", (req, res) => {
+  const { studentId, opportunityId, coverLetter } = req.body;
+  if (!studentId || !opportunityId || !coverLetter)
+    return res.status(400).json({ error: "All fields are required" });
+
+  db.run(
+    "INSERT INTO applications (studentId, opportunityId, coverLetter) VALUES (?, ?, ?)",
+    [studentId, opportunityId, coverLetter],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "✅ Application submitted successfully", id: this.lastID });
+    }
+  );
+});
+
 // --- START SERVER ---
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
