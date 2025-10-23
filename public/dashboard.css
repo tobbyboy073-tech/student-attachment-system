@@ -39,3 +39,41 @@ button {
 button:hover {
   background: #0077cc;
 }
+/* --- Mobile Responsive Enhancements --- */
+@media (max-width: 768px) {
+  body {
+    font-size: 18px;
+    padding: 10px;
+  }
+
+  header {
+    font-size: 22px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    font-size: 18px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    font-size: 18px;
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 20px;
+    text-align: center;
+  }
+}
