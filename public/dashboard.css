@@ -142,3 +142,46 @@ button:hover {
     padding: 12px;
   }
 }
+/* --- Responsive Navbar and Dashboard Layout --- */
+@media (max-width: 768px) {
+  /* Navbar: stack links vertically */
+  nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  nav a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    font-size: 18px;
+  }
+
+  /* Dashboard cards: stack in one column */
+  .dashboard-cards, .cards, .grid {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .card {
+    width: 100%;
+    padding: 16px;
+    font-size: 18px;
+    text-align: center;
+  }
+
+  /* Ensure buttons and inputs stretch */
+  button, input, select {
+    width: 100%;
+  }
+
+  /* Improve spacing */
+  .container {
+    padding: 15px;
+  }
+}
